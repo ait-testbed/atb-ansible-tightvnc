@@ -1,2 +1,43 @@
----
-# tasks file for atb-ansible-tightvnc
+- name: Install TightVNC server and Xubuntu desktop
+  ansible.builtin.package:
+    name:
+      - tightvncserver
+      - xubuntu-desktop
+    state: present
+
+- name: Create .vnc directory
+  ansible.builtin.file:
+    path: "/home/{{ vnc_user }}/.vnc"
+    state: directory
+    mode: '0700'  # Set permissions so only the user can access
+
+- name: Set VNC password
+  ansible.builtin.command:
+    cmd: echo "{{ vnc_password }}" | /usr/bin/vncpasswd -f
+    chdir: "/home/{{ vnc_user }}/.vnc"
+  become: yes
+
+- name: Set permissions on the passwd file
+  ansible.builtin.file:
+    path: "/home/{{ vnc_user }}/.vnc/passwd"
+    mode: '0600'
+    owner: "{{ vnc_user }}"
+  become: yes
+
+- name: Configure VNC server
+  ansible.builtin.template:
+    src: vncserver.j2
+    dest: /etc/systemd/system/vncserver.service
+  become: yes
+  notify: reload systemd
+
+- name: Unmask VNC server service
+  ansible.builtin.command:
+    cmd: systemctl unmask vncserver.service
+  become: yes
+
+- name: Start and enable VNC server service
+  ansible.builtin.systemd:
+    name: "vncserver.service"
+    enabled: yes
+    state: started

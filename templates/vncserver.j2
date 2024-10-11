@@ -1,0 +1,17 @@
+[Unit]
+Description=starts TightVNC server 
+After=display-manager.service
+
+[Service]
+Type=simple
+User={{ vnc_user }}
+PAMName=login
+ExecStartPre=-/usr/bin/vncserver -kill  {{ vnc_display }}   # Ensure any existing instance is killed
+ExecStart=/usr/bin/tightvncserver {{ vnc_display }}
+ExecStop=/usr/bin/vncserver -kill {{ vnc_display }}
+Restart=on-failure  # Restart the service on failure
+RestartSec=5        # Wait 5 seconds before restarting
+TimeoutSec=30       # Timeout for service to stop
+
+[Install]
+WantedBy=multi-user.target
