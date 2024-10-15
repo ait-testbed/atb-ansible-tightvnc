@@ -3,6 +3,10 @@
     name:
       - tightvncserver
       - xubuntu-desktop
+      - xfonts-100dpi
+      - xfonts-75dpi
+      - fonts-dejavu
+      - xfonts-scalable
     state: present
 
 - name: Create .vnc directory
@@ -31,10 +35,26 @@
   become: yes
   notify: reload systemd
 
+# handlers/main.yml
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+
 - name: Unmask VNC server service
-  ansible.builtin.command:
-    cmd: systemctl unmask vncserver.service
+  ansible.builtin.systemd:
+    name: vncserver.service
+    masked: no
   become: yes
+  notify: reload systemd
+
+
+# handlers/main.yml
+- name: reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+
 
 - name: Start and enable VNC server service
   ansible.builtin.systemd:

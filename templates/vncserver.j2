@@ -1,17 +1,12 @@
 [Unit]
-Description=starts TightVNC server 
-After=display-manager.service
+Description=Start TightVNC server at startup
+After=syslog.target network.target
 
 [Service]
-Type=simple
+Type=forking
 User={{ vnc_user }}
-PAMName=login
-ExecStartPre=-/usr/bin/vncserver -kill  {{ vnc_display }}   # Ensure any existing instance is killed
-ExecStart=/usr/bin/tightvncserver {{ vnc_display }}
+ExecStartPre=/bin/sh -c '/usr/bin/vncserver -kill {{ vnc_display }} > /dev/null 2>&1 || :'
+ExecStart=/usr/bin/tightvncserver -geometry 1800x1000 -depth 16 -dpi 120 -alwaysshared {{ vnc_display }}
 ExecStop=/usr/bin/vncserver -kill {{ vnc_display }}
-Restart=on-failure  # Restart the service on failure
-RestartSec=5        # Wait 5 seconds before restarting
-TimeoutSec=30       # Timeout for service to stop
-
 [Install]
 WantedBy=multi-user.target
