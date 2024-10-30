@@ -1,8 +1,8 @@
-- name: Install TightVNC server and Xubuntu desktop
+- name: Install TightVNC server and xfce4
   ansible.builtin.package:
     name:
       - tightvncserver
-      - xubuntu-desktop
+      - xfce4 
       - xfonts-100dpi
       - xfonts-75dpi
       - fonts-dejavu
@@ -53,7 +53,6 @@
 - name: reload systemd
   ansible.builtin.systemd:
     daemon_reload: yes
-
 
 
 - name: Start and enable VNC server service

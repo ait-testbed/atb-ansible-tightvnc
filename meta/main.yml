@@ -1,6 +1,6 @@
 galaxy_info:
   author: Thorina Boenke
-  description: Installs tightvnc and xubuntu desktop environment
+  description: Installs tightvnc and xfce4 desktop environment
   company: Austrian Institute of Technology
 
   license: GPL-3.0
