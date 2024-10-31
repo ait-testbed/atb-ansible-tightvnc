@@ -72,6 +72,6 @@
 
 - name: Start and enable VNC server service
   ansible.builtin.systemd:
-    name: "vncserver.service"
+    name: vncserver.service
     enabled: yes
     state: started
