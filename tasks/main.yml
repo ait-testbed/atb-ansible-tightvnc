@@ -15,6 +15,14 @@
     state: directory
     mode: '0700'  # Set permissions so only the user can access
 
+- name: Ensure VNC passwd file exists
+  ansible.builtin.file:
+    path: "/home/{{ vnc_user }}/.vnc/passwd"
+    state: touch
+    mode: '0600'
+    owner: "{{ vnc_user }}"
+  become: yes
+
 - name: Set VNC password
   ansible.builtin.command:
     cmd: echo "{{ vnc_password }}" | /usr/bin/vncpasswd -f
@@ -27,6 +35,13 @@
     mode: '0600'
     owner: "{{ vnc_user }}"
   become: yes
+
+- name: Set xstartup file
+  ansible.builtin.template:
+    src: xstartup.j2
+    dest: /home/{{ vnc_user }}/.vnc/xstartup
+  become: yes
+
 
 - name: Configure VNC server
   ansible.builtin.template:
