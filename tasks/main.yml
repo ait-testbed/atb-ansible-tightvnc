@@ -9,6 +9,10 @@
       - xfonts-scalable
     state: present
 
+- name: Check if vnc_user is defined
+  ansible.builtin.debug:
+    msg: "vnc_user is set to {{ vnc_user }}"
+
 - name: Create .vnc directory
   ansible.builtin.file:
     path: "/home/{{ vnc_user }}/.vnc"
