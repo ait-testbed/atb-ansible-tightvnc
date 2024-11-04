@@ -1,12 +1,7 @@
-- name: Install TightVNC server and xfce4
+- name: Install TightVNC server
   ansible.builtin.package:
     name:
       - tightvncserver
-      - xfce4 
-      - xfonts-100dpi
-      - xfonts-75dpi
-      - fonts-dejavu
-      - xfonts-scalable
     state: present
 
 - name: Check if vnc_user is defined
@@ -18,6 +13,8 @@
     path: "/home/{{ vnc_user }}/.vnc"
     state: directory
     mode: '0700'  # Set permissions so only the user can access
+    owner: "{{ vnc_user }}"
+    group: "{{ vnc_user }}"
 
 - name: Ensure VNC passwd file exists
   ansible.builtin.file:
@@ -25,6 +22,7 @@
     state: touch
     mode: '0600'
     owner: "{{ vnc_user }}"
+    group: "{{ vnc_user }}"
   become: yes
 
 - name: Set VNC password
@@ -33,17 +31,14 @@
     chdir: "/home/{{ vnc_user }}/.vnc"
   become: yes
 
-- name: Set permissions on the passwd file
-  ansible.builtin.file:
-    path: "/home/{{ vnc_user }}/.vnc/passwd"
-    mode: '0600'
-    owner: "{{ vnc_user }}"
-  become: yes
 
 - name: Set xstartup file
   ansible.builtin.template:
     src: xstartup.j2
     dest: /home/{{ vnc_user }}/.vnc/xstartup
+    mode: '0700'
+    owner: "{{ vnc_user }}"
+    group: "{{ vnc_user }}"
   become: yes
 
 
@@ -59,6 +54,7 @@
   ansible.builtin.systemd:
     name: vncserver.service
     enabled: yes
+    state: started
   become: yes
   notify: reload systemd
 

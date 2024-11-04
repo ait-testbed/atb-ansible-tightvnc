@@ -1,11 +1,13 @@
-# Ansible Role: TightVNC and xfce4 Desktop
+# Ansible Role: TightVNC 
 
-This Ansible role installs the TightVNC server and the xfce4 desktop environment. It configures the VNC server with a password and a specific port.
+This Ansible role installs the TightVNC server. It configures the VNC server with a password and a specific port.
 
 ## Requirements
 
-- Ansible installed
 - A Debian-based system (like Ubuntu)
+- Ansible installed
+- MATE desktop environment installed
+
 
 ## Role Variables
 
